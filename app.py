@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import text
 from database import SessionLocal, engine
@@ -12,6 +12,11 @@ def create_app():
     Base.metadata.create_all(bind=engine)
 
     @app.route('/health', methods=['GET'])
+
+    @app.route("/")
+    def index():
+        return render_template("index.html")
+
     def health():
         try:
             with engine.connect() as conn:
