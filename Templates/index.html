@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todo App</title>
+</head>
+<body>
+    <h1>Simple Todo App</h1>
+
+    <form id="todoForm">
+        <input type="text" id="title" placeholder="Enter todo..." required>
+        <button type="submit">Add Todo</button>
+    </form>
+
+    <h2>Todos:</h2>
+    <ul id="todoList"></ul>
+
+    <script>
+        const API_URL = "/todos";
+
+        async function loadTodos() {
+            const res = await fetch(API_URL);
+            const todos = await res.json();
+            const list = document.getElementById("todoList");
+            list.innerHTML = "";
+
+            todos.forEach(t => {
+                const li = document.createElement("li");
+                li.textContent = t.title + (t.done ? " ✅" : "");
+                list.appendChild(li);
+            });
+        }
+
+        document.getElementById("todoForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const title = document.getElementById("title").value;
+            await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title })
+            });
+            document.getElementById("title").value = "";
+            loadTodos();
+        });
+
+        loadTodos();
+    </script>
+
+</body>
+</html>
